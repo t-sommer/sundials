@@ -3,34 +3,40 @@ image:
 
 build: false
 
+environment:
+
+  matrix:
+    - FMI_PLATFORM: win32
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - FMI_PLATFORM: win64
+      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+
 install:
-  # download the SUNDIALS sources
+  # download the sources
   - appveyor DownloadFile https://computation.llnl.gov/projects/sundials/download/sundials-3.0.0.tar.gz
   
   # extract the archive
   - 7z e sundials-3.0.0.tar.gz
   - 7z x sundials-3.0.0.tar
 
+  # generate and build the solution
   - cd sundials-3.0.0
-  
-  # build x86
-  - cd msvc2015-x86
-  - cmake ..
+  - mkdir build
+  - cd build
+  - >
+    cmake
+    -G "%CMAKE_GENERATOR%"
+    -DBUILD_STATIC_LIBS:BOOL=OFF
+    -DCMAKE_C_FLAGS_RELEASE:STRING=/MT /O2 /Ob2 /D NDEBUG
+    ..
   - msbuild sundials.sln /t:Clean,Build /p:Configuration=Release
-  - copy src\cvode\Release\sundials_cvode.dll ..\..\win32
-  - copy src\nvec_ser\Release\sundials_nvecserial.dll ..\..\win32
-  
-  # build x64
-  - cd ..
-  - cd msvc2015-x64
-  - cmake ..
-  - msbuild sundials.sln /t:Clean,Build /p:Configuration=Release
-  - copy src\cvode\Release\sundials_cvode.dll ..\..\win64
-  - copy src\nvec_ser\Release\sundials_nvecserial.dll ..\..\win64
+
+  # copy the shared libraries
+  - copy src\cvode\Release\sundials_cvode.dll .
+  - copy src\nvec_ser\Release\sundials_nvecserial.dll .
 
   # create the archive
-  - cd ..\..
-  - 7z a sundials-3.0.0-msvc2015.zip win32\*.dll win64\*.dll
+  - 7z a ..\..\sundials-3.0.0-%FMI_PLATFORM%.zip sundials_*.dll
 
 artifacts:
-  - path: sundials-3.0.0-msvc2015.zip
+  - path: sundials-3.0.0-%FMI_PLATFORM%.zip

@@ -1,0 +1,23 @@
+language: generic
+
+matrix:
+  include:
+    - os: linux
+      env:
+        - FMI_PLATFORM=linux64
+    - os: osx
+      env:
+        - FMI_PLATFORM=darwin64
+
+script:
+  - wget https://computation.llnl.gov/projects/sundials/download/sundials-3.0.0.tar.gz
+  - tar -xvzf sundials-3.0.0.tar.gz
+  - cd sundials-3.0.0
+  - mkdir build
+  - cd build
+  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF ..
+  - make
+  - cp src/cvode/libsundials_cvode.so .
+  - cp src/nvec_ser/libsundials_nvecserial.so .
+  - cd ..
+  - tar -zcvf ../../sundials-3.0.0-$FMI_PLATFORM.tar.gz libsundials_*.so
