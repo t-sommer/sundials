@@ -17,7 +17,5 @@ script:
   - cd build
   - cmake -DBUILD_STATIC_LIBS:BOOL=OFF ..
   - make
-  - cp src/cvode/libsundials_cvode.so .
-  - cp src/nvec_ser/libsundials_nvecserial.so .
-  - cd ..
-  - tar -zcvf ../../sundials-3.0.0-$FMI_PLATFORM.tar.gz libsundials_*.so
+  - find . -name "*.so"
+  - find . -name "*.dylib"
