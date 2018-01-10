@@ -1,0 +1,36 @@
+image:
+  - Visual Studio 2015
+
+build: false
+
+install:
+  # download the SUNDIALS sources
+  - appveyor DownloadFile https://computation.llnl.gov/projects/sundials/download/sundials-3.0.0.tar.gz
+  
+  # extract the archive
+  - 7z e sundials-3.0.0.tar.gz
+  - 7z x sundials-3.0.0.tar
+
+  - cd sundials-3.0.0
+  
+  # build x86
+  - cd msvc2015-x86
+  - cmake ..
+  - msbuild sundials.sln /t:Clean,Build /p:Configuration=Release
+  - copy src\cvode\Release\sundials_cvode.dll ..\..\win32
+  - copy src\nvec_ser\Release\sundials_nvecserial.dll ..\..\win32
+  
+  # build x64
+  - cd ..
+  - cd msvc2015-x64
+  - cmake ..
+  - msbuild sundials.sln /t:Clean,Build /p:Configuration=Release
+  - copy src\cvode\Release\sundials_cvode.dll ..\..\win64
+  - copy src\nvec_ser\Release\sundials_nvecserial.dll ..\..\win64
+
+  # create the archive
+  - cd ..\..
+  - 7z a sundials-3.0.0-msvc2015.zip win32\*.dll win64\*.dll
+
+artifacts:
+  - path: sundials-3.0.0-msvc2015.zip
