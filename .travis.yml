@@ -1,21 +1,28 @@
 language: generic
 
+env:
+  - SUNDIALS_VERSION=3.0.0
+
 matrix:
   include:
     - os: linux
       env:
         - FMI_PLATFORM=linux64
+        - SHARED_LIBRARY_EXTENSION=so
     - os: osx
       env:
         - FMI_PLATFORM=darwin64
+        - SHARED_LIBRARY_EXTENSION=dylib
 
 script:
-  - wget https://computation.llnl.gov/projects/sundials/download/sundials-3.0.0.tar.gz
-  - tar -xvzf sundials-3.0.0.tar.gz
-  - cd sundials-3.0.0
+  - wget https://computation.llnl.gov/projects/sundials/download/sundials-$SUNDIALS_VERSION.tar.gz
+  - tar -xvzf sundials-$SUNDIALS_VERSION.tar.gz
+  - cd sundials-$SUNDIALS_VERSION
   - mkdir build
   - cd build
-  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF ..
+  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF -DCMAKE_INSTALL_PREFIX:PATH=$TRAVIS_BUILD_DIR ..
   - make
-  - find . -name "*.so"
-  - find . -name "*.dylib"
+  - make install
+  - cd $TRAVIS_BUILD_DIR/lib
+  - find . -name "*.$SHARED_LIBRARY_EXTENSION"
+  - tar -zchvf ../sundials-$SUNDIALS_VERSION-$FMI_PLATFORM.tar.gz libsundials_*.$SHARED_LIBRARY_EXTENSION
