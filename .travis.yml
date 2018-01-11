@@ -1,18 +1,17 @@
 language: generic
 
-env:
-  - SUNDIALS_VERSION="3.0.0"
-
 matrix:
   include:
     - os: linux
       env:
         - FMI_PLATFORM=linux64
         - SHARED_LIBRARY_EXTENSION=so
+        - SUNDIALS_VERSION=3.0.0
     - os: osx
       env:
         - FMI_PLATFORM=darwin64
         - SHARED_LIBRARY_EXTENSION=dylib
+        - SUNDIALS_VERSION=3.0.0
 
 before_script:
   - echo SUNDIALS_VERSION=${SUNDIALS_VERSION}
