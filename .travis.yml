@@ -1,7 +1,7 @@
 language: generic
 
 env:
-  - SUNDIALS_VERSION=3.0.0
+  - SUNDIALS_VERSION="3.0.0"
 
 matrix:
   include:
@@ -13,6 +13,11 @@ matrix:
       env:
         - FMI_PLATFORM=darwin64
         - SHARED_LIBRARY_EXTENSION=dylib
+
+before_script:
+  - echo SUNDIALS_VERSION=$SUNDIALS_VERSION
+  - echo FMI_PLATFORM=$FMI_PLATFORM
+  - echo SHARED_LIBRARY_EXTENSION=$SHARED_LIBRARY_EXTENSION
 
 script:
   - wget https://computation.llnl.gov/projects/sundials/download/sundials-$SUNDIALS_VERSION.tar.gz
