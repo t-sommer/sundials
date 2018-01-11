@@ -1,0 +1,51 @@
+build: false
+
+environment:
+
+  matrix:
+    - FMI_PLATFORM: win32
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
+    - FMI_PLATFORM: win64
+      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+
+init:
+  - echo %FMI_PLATFORM% %CMAKE_GENERATOR%
+
+install:
+  # download the sources
+  - appveyor DownloadFile https://computation.llnl.gov/projects/sundials/download/sundials-3.0.0.tar.gz
+  
+  # extract the archive
+  - 7z e sundials-3.0.0.tar.gz
+  - 7z x sundials-3.0.0.tar
+
+  # generate and build the solution
+  - cd sundials-3.0.0
+  - mkdir build
+  - cd build
+  - >
+    cmake
+    -G "%CMAKE_GENERATOR%"
+    -DBUILD_STATIC_LIBS:BOOL=OFF
+    -DCMAKE_C_FLAGS_RELEASE:STRING=/MT /O2 /Ob2 /D NDEBUG
+    ..
+  - msbuild sundials.sln /t:Clean,Build /p:Configuration=Release
+
+  # copy the shared libraries
+  - copy src\cvode\Release\sundials_cvode.dll .
+  - copy src\nvec_ser\Release\sundials_nvecserial.dll .
+
+  # create the archive
+  - 7z a ..\..\sundials-3.0.0-%FMI_PLATFORM%.zip sundials_*.dll
+
+artifacts:
+  - path: sundials-3.0.0-%FMI_PLATFORM%.zip
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: fYC9YbZE2YMcRO1i1RXOECpa2d78MJ+zDtreMVh9aKKJZ5FleqtpcnuWwZyZEE/w
+  artifact: "sundials-3.0.0-%FMI_PLATFORM%.zip"
+  on:
+    branch: master
+    appveyor_repo_tag: true

@@ -1,0 +1,41 @@
+language: generic
+
+matrix:
+  include:
+    - os: linux
+      env:
+        - FMI_PLATFORM=linux64
+        - SHARED_LIBRARY_EXTENSION=so
+        - SUNDIALS_VERSION=3.0.0
+    - os: osx
+      env:
+        - FMI_PLATFORM=darwin64
+        - SHARED_LIBRARY_EXTENSION=dylib
+        - SUNDIALS_VERSION=3.0.0
+
+before_script:
+  - echo SUNDIALS_VERSION=${SUNDIALS_VERSION}
+  - echo FMI_PLATFORM=${FMI_PLATFORM}
+  - echo SHARED_LIBRARY_EXTENSION=${SHARED_LIBRARY_EXTENSION}
+
+script:
+  - wget https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz
+  - tar -xvzf sundials-${SUNDIALS_VERSION}.tar.gz
+  - cd sundials-${SUNDIALS_VERSION}
+  - mkdir build
+  - cd build
+  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF -DCMAKE_INSTALL_PREFIX:PATH=${TRAVIS_BUILD_DIR} ..
+  - make
+  - make install
+  - cd ${TRAVIS_BUILD_DIR}/lib
+  - find . -name "*.${SHARED_LIBRARY_EXTENSION}"
+  - tar -zchvf ../sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz libsundials_*.${SHARED_LIBRARY_EXTENSION}
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "pxB6Qt28CHWaNNpDr5gnpKCsGG04pje6mEj6GFWVRCTwOmB6o3TXvCZG4WJrlzcl3UeHqUfyhs+z849PN+SK3YdgTqAIy1FSrSE8vRHtKyxOM65LFjNmGsKuxCrAjOWSKuKfoMXv+pRkVkiijnLKN9uv0KmYS/ypAxUBnJQ3iRTa6PRs21HRzi/AHjWyFBhgeIk7b1Af5kYEpzOIbYCrOzg8w8yq6ACIY1oYLZHzFCtdeo3rg2TToUAjbB1Rm0jtG7mtARNDB3NwaiSzn14Naan75jkPIS3T1PMr0Lii+9ZpKp6DVU0KNNnuQFyxGiy9kY2NygcYKt4XA8ucaRZbLWqR2VQXJlz9ou2EZIJPAikO9Vs7njnXuSRnlmQELRsjwIfpKCipO7QDrIKeClwGTLpSeDbYDFxN+xfkZNSk29J5jUQbTDlKCXaXaOS9scj8awBmXkOvyUXAIcqX3aaqOe2DN6OZTIf2eFDzzHEoF4u0dAZO9XAYyNiITxo8/lnui/lTWh7M9OzJP/ToMUAHXoQbDtgsRjWuTay0t+11LLXWFpLwF4MbbW6AfpajCVwMUR3TdaVTTNHNQ6nr+wXB9ENH4XM5K7LVxj6U1V+HfPq4t+tqSfY2WjZl8JmCk3LuyKwXNHv954eo1Tpt79h0DGNwzlNDQJkyfx464v0NqBE="
+  file: sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
