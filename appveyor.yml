@@ -40,3 +40,12 @@ install:
 
 artifacts:
   - path: sundials-3.0.0-%FMI_PLATFORM%.zip
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: fYC9YbZE2YMcRO1i1RXOECpa2d78MJ+zDtreMVh9aKKJZ5FleqtpcnuWwZyZEE/w
+  artifact: "sundials-3.0.0-%FMI_PLATFORM%.zip"
+  on:
+    branch: master
+    appveyor_repo_tag: true
