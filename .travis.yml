@@ -29,7 +29,8 @@ script:
   - make install
   - cd ${TRAVIS_BUILD_DIR}/lib
   - find . -name "*.${SHARED_LIBRARY_EXTENSION}"
-  - tar -zchvf ../sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz libsundials_*.${SHARED_LIBRARY_EXTENSION}
+  - tar -zchvf ${TRAVIS_BUILD_DIR}/sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz libsundials_*.${SHARED_LIBRARY_EXTENSION}
+  - ls -alh ${TRAVIS_BUILD_DIR}
 
 deploy:
   provider: releases

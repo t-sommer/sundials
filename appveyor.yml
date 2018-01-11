@@ -47,5 +47,4 @@ deploy:
     secure: fYC9YbZE2YMcRO1i1RXOECpa2d78MJ+zDtreMVh9aKKJZ5FleqtpcnuWwZyZEE/w
   artifact: "sundials-3.0.0-%FMI_PLATFORM%.zip"
   on:
-    branch: master
     appveyor_repo_tag: true
