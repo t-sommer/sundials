@@ -36,7 +36,7 @@ deploy:
   provider: releases
   api_key:
     secure: "pxB6Qt28CHWaNNpDr5gnpKCsGG04pje6mEj6GFWVRCTwOmB6o3TXvCZG4WJrlzcl3UeHqUfyhs+z849PN+SK3YdgTqAIy1FSrSE8vRHtKyxOM65LFjNmGsKuxCrAjOWSKuKfoMXv+pRkVkiijnLKN9uv0KmYS/ypAxUBnJQ3iRTa6PRs21HRzi/AHjWyFBhgeIk7b1Af5kYEpzOIbYCrOzg8w8yq6ACIY1oYLZHzFCtdeo3rg2TToUAjbB1Rm0jtG7mtARNDB3NwaiSzn14Naan75jkPIS3T1PMr0Lii+9ZpKp6DVU0KNNnuQFyxGiy9kY2NygcYKt4XA8ucaRZbLWqR2VQXJlz9ou2EZIJPAikO9Vs7njnXuSRnlmQELRsjwIfpKCipO7QDrIKeClwGTLpSeDbYDFxN+xfkZNSk29J5jUQbTDlKCXaXaOS9scj8awBmXkOvyUXAIcqX3aaqOe2DN6OZTIf2eFDzzHEoF4u0dAZO9XAYyNiITxo8/lnui/lTWh7M9OzJP/ToMUAHXoQbDtgsRjWuTay0t+11LLXWFpLwF4MbbW6AfpajCVwMUR3TdaVTTNHNQ6nr+wXB9ENH4XM5K7LVxj6U1V+HfPq4t+tqSfY2WjZl8JmCk3LuyKwXNHv954eo1Tpt79h0DGNwzlNDQJkyfx464v0NqBE="
-  file: sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz
+  file: sundials-*.tar.gz
   skip_cleanup: true
   on:
     tags: true
