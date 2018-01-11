@@ -15,19 +15,19 @@ matrix:
         - SHARED_LIBRARY_EXTENSION=dylib
 
 before_script:
-  - echo SUNDIALS_VERSION=$SUNDIALS_VERSION
-  - echo FMI_PLATFORM=$FMI_PLATFORM
-  - echo SHARED_LIBRARY_EXTENSION=$SHARED_LIBRARY_EXTENSION
+  - echo SUNDIALS_VERSION=${SUNDIALS_VERSION}
+  - echo FMI_PLATFORM=${FMI_PLATFORM}
+  - echo SHARED_LIBRARY_EXTENSION=${SHARED_LIBRARY_EXTENSION}
 
 script:
-  - wget https://computation.llnl.gov/projects/sundials/download/sundials-$SUNDIALS_VERSION.tar.gz
-  - tar -xvzf sundials-$SUNDIALS_VERSION.tar.gz
-  - cd sundials-$SUNDIALS_VERSION
+  - wget https://computation.llnl.gov/projects/sundials/download/sundials-${SUNDIALS_VERSION}.tar.gz
+  - tar -xvzf sundials-${SUNDIALS_VERSION}.tar.gz
+  - cd sundials-${SUNDIALS_VERSION}
   - mkdir build
   - cd build
-  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF -DCMAKE_INSTALL_PREFIX:PATH=$TRAVIS_BUILD_DIR ..
+  - cmake -DBUILD_STATIC_LIBS:BOOL=OFF -DCMAKE_INSTALL_PREFIX:PATH=${TRAVIS_BUILD_DIR} ..
   - make
   - make install
-  - cd $TRAVIS_BUILD_DIR/lib
-  - find . -name "*.$SHARED_LIBRARY_EXTENSION"
-  - tar -zchvf ../sundials-$SUNDIALS_VERSION-$FMI_PLATFORM.tar.gz libsundials_*.$SHARED_LIBRARY_EXTENSION
+  - cd ${TRAVIS_BUILD_DIR}/lib
+  - find . -name "*.${SHARED_LIBRARY_EXTENSION}"
+  - tar -zchvf ../sundials-${SUNDIALS_VERSION}-${FMI_PLATFORM}.tar.gz libsundials_*.${SHARED_LIBRARY_EXTENSION}
